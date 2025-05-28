@@ -1,128 +1,138 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-     
-    <meta charset="UTF-8" />
-     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>동아리 소개 및 신청</title>
-      <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .club-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: white;
-            padding: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .club {
-            margin-bottom: 2rem;
-        }
-
-        .club img {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        form {
-            margin-top: 1rem;
-        }
-
-        input,
-        textarea,
-        button {
-            width: 100%;
-            padding: 0.5rem;
-            margin: 0.3rem 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-        }
-
-        .comments {
-            margin-top: 2rem;
-        }
-
-        .comment {
-            background: #f0f0f0;
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>온양고 포털</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f0f2f5;
+      color: #222;
+      line-height: 1.6;
+    }
+    header {
+      position: relative;
+      background: url('https://images.unsplash.com/photo-1653407497540-26207a2408d7?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8JUVEJTg1JThDJUVDJThBJUFDJUVCJTlEJUJDJTIwJUVCJUExJTlDJUVCJTkzJTlDJTIwJUVDJThBJUE0JUVEJTg0JUIwfGVufDB8fDB8fHww') no-repeat center 55% / cover;
+      height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 0;
+    }
+    .header-content {
+      position: relative;
+      z-index: 1;
+      padding: 0 1rem;
+    }
+    .header-content h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+    .header-content p {
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+    main {
+      padding: 4rem 1rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #004aad;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+      color: #004aad;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #004aad;
+    }
+    .card p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+    footer {
+      background-color: #002244;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 4rem;
+    }
+    @media (max-width: 600px) {
+      .header-content h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-    <header>
-          <h1>동아리 소개 및 신청</h1>
-    </header>
-
-    <div class="club-container">
-          <div class="club">
-                <h2>미디어 동아리</h2>
-                <img src="https://via.placeholder.com/600x200" alt="동아리 사진">
-                <p>영상 제작, 편집, 학교 방송 등을 담당하는 동아리입니다.</p>
-              </div>
-
-          <form id="applyForm">
-                <h3>동아리 신청</h3>
-                <input type="text" id="name" placeholder="이름" required />
-                <input type="text" id="grade" placeholder="학년/반" required />
-                <textarea id="reason" placeholder="신청 이유" required></textarea>
-                <button type="submit">신청하기</button>
-              </form>
-
-          <div class="comments">
-                <h3>Q&A 댓글</h3>
-                <textarea id="commentText" placeholder="질문을 입력하세요"></textarea>
-                <button onclick="postComment()">댓글 달기</button>
-                <div id="commentList"></div>
-              </div>
+  <header>
+    <div class="header-content">
+      <h1>온양고등학교 포털</h1>
+      <p>학교 소식과 정보를 한눈에!</p>
     </div>
+  </header>
 
-    <script>
-        // 임시로 댓글을 로컬에 저장
-        function postComment() {
-            const text = document.getElementById('commentText').value;
-            if (text.trim()) {
-                const div = document.createElement('div');
-                div.className = 'comment';
-                div.textContent = text;
-                document.getElementById('commentList').appendChild(div);
-                document.getElementById('commentText').value = '';
-            }
-        }
+  <main>
+    <section>
+      <h2 class="section-title">주요 기능</h2>
+      <div class="grid">
+        <a href="calendar.html" class="card">
+          <h3>📅 학교 일정</h3>
+          <p>중요 학사일정과 행사를 확인하세요.</p>
+        </a>
+        <a href="news.html" class="card">
+          <h3>📰 학교 뉴스</h3>
+          <p>최신 소식, 보도자료, 활동내용 등을 안내합니다.</p>
+        </a>
+      </div>
+    </section>
+  </main>
 
-        // 신청 폼 제출 이벤트
-        document.getElementById('applyForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            alert("신청이 완료되었습니다. (Firebase 연동 시 실제 저장 가능)");
-            e.target.reset();
-        });
-    </script>
+  <footer>
+    © 2025 온양고등학교 | 충청남도 아산시| 연락처: 010-5374-7937
+  </footer>
 
 </body>
-
 </html>
