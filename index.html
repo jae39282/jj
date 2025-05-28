@@ -2,143 +2,112 @@
 <html lang="ko">
 
 <head>
-     
-    <meta charset="UTF-8" />
-     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>온양고 학교 포털 홈페이지</title>
-      <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>온양고 학교 포털 홈페이지</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #e8f0ff, #f9fbff);
+      color: #333;
+    }
 
-        header {
-            background: linear-gradient(90deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
+    header {
+      background: linear-gradient(90deg, #1e3c72, #2a5298);
+      color: white;
+      padding: 2.5rem 1rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
 
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            padding: 3rem 1rem;
-        }
+    header p {
+      margin: 0.5rem 0 0;
+      font-size: 1.2rem;
+      font-weight: 300;
+    }
 
-        .link-card {
-            display: block;
-            text-decoration: none;
-            background-color: #f0f4ff;
-            color: #1e3c72;
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            font-size: 1.2rem;
-            transition: transform 0.2s, background-color 0.2s;
-        }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      padding: 4rem 1rem;
+    }
 
-        .link-card:hover {
-            background-color: #dce7ff;
-            transform: translateY(-3px);
-        }
-    </style>
+    .link-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      text-decoration: none;
+      background-color: #e9f0ff;
+      color: #1e3c72;
+      padding: 1.5rem 2rem;
+      border-radius: 18px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 480px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+      transition: transform 0.25s ease, background-color 0.3s ease, box-shadow 0.3s;
+    }
+
+    .link-card:hover {
+      background-color: #d0e0ff;
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(30, 60, 114, 0.2);
+    }
+
+    .link-card::before {
+      
+      animation: twinkle 1.5s infinite;
+      font-size: 1.1rem;
+    }
+
+    @keyframes twinkle {
+      0%, 100% {
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    footer {
+      background-color: #f1f5f9;
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.9rem;
+      color: #555;
+      border-top: 1px solid #ddd;
+    }
+  </style>
 </head>
 
 <body>
-      <header>
-            <h1>온양고 학교 포털</h1>
-            <p>캘린더, 뉴스 기능을 한 곳에서!</p>
-          </header>
-      <main>
-            <a href="calendar.html" class="link-card">학교 일정 캘린더</a>
-           
-            <a href="news.html" <!DOCTYPE html>
-            <html lang="ko">
+  <header>
+    <h1>온양고 학교 포털</h1>
+    <p>캘린더, 뉴스, 모든 정보를 한 곳에!</p>
+  </header>
 
-            <head>
-                <meta charset="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>학교 포털 홈페이지</title>
-                <style>
-                    body {
-                        margin: 0;
-                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                        background-color: #ffffff;
-                        color: #333;
-                    }
+  <main>
+    <a href="calendar.html" class="link-card"> 학교 일정 캘린더</a>
+    <a href="news.html" class="link-card"> 학교 신문 / 뉴스</a>
+    <!-- 향후 추가 예시 -->
+    <!-- <a href="notices.html" class="link-card"> 공지사항</a> -->
+    <!-- <a href="library.html" class="link-card"> 도서관 서비스</a> -->
+  </main>
 
-                    header {
-                        background: linear-gradient(90deg, #1e3c72, #2a5298);
-                        color: white;
-                        padding: 2rem;
-                        text-align: center;
-                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                    }
-
-                    header h1 {
-                        margin: 0;
-                        font-size: 2rem;
-                    }
-
-                    main {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 1.5rem;
-                        padding: 3rem 1rem;
-                    }
-
-                    .link-card {
-                        display: block;
-                        text-decoration: none;
-                        background-color: #f0f4ff;
-                        color: #1e3c72;
-                        padding: 1.5rem 2rem;
-                        border-radius: 12px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        width: 80%;
-                        max-width: 500px;
-                        text-align: center;
-                        font-size: 1.2rem;
-                        transition: transform 0.2s, background-color 0.2s;
-                    }
-
-                    .link-card:hover {
-                        background-color: #dce7ff;
-                        transform: translateY(-3px);
-                    }
-                </style>
-            </head>
-
-            <body>
-                <header>
-                    <h1>손재원</h1>
-                    <p>기사 올려주세요!</p>
-                </header>
-                <main>
-                    <a href="calendar.html" class="link-card">학교 일정 캘린더</a>
-
-                    <a href="news.html" class="link-card">학교 신문 / 뉴스</a>
-                </main>
-            </body>
-
-            </html> class="link-card">학교 신문 / 뉴스
-        </a>
-          </main>
+  <footer>
+    © 2025 온양고등학교. All rights reserved.
+  </footer>
 </body>
 
 </html>
