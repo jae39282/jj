@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+     
+    <meta charset="UTF-8" />
+     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>학교 일정 캘린더</title>
+     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
+     
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+      <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+        }
+
+        header {
+            background-color: #2a5298;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 2rem auto;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .memo-input,
+        .memo-list {
+            max-width: 900px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .memo-input input,
+        .memo-input button {
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        #event-form {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        #event-form input,
+        #event-form button {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            width: 100%;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+      <header>
+            <h1>학교 일정 캘린더</h1>
+          </header>
+
+      <div id="calendar"></div>
+
+      <div class="memo-input">
+            <input type="text" id="memoText" placeholder="메모를 입력하세요">
+            <button onclick="addMemo()">메모 추가</button>
+          </div>
+      <div class="memo-list" id="memoList">
+            <h3>내 메모</h3>
+            <ul id="memos"></ul>
+          </div>
+
+      <div id="overlay"></div>
+      <div id="event-form">
+            <h3 id="form-title">일정 추가</h3>
+            <input type="text" id="event-title" placeholder="일정 제목">
+            <button onclick="saveEvent()">저장</button>
+            <button onclick="deleteEvent()" id="deleteBtn"
+            style="display: none; background: #f44336; color: white;">삭제</button>
+            <button onclick="closeForm()">취소</button>
+          </div>
+
+     
+    <script>
+        let calendar;
+        let selectedDate = null;
+        let selectedEvent = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ko',
+                selectable: true,
+                events: [],
+                dateClick: function (info) {
+                    selectedDate = info.dateStr;
+                    selectedEvent = null;
+                    document.getElementById('form-title').textContent = '일정 추가';
+                    document.getElementById('event-title').value = '';
+                    document.getElementById('deleteBtn').style.display = 'none';
+                    openForm();
+                },
+                eventClick: function (info) {
+                    selectedEvent = info.event;
+                    selectedDate = info.event.startStr;
+                    document.getElementById('form-title').textContent = '일정 수정';
+                    document.getElementById('event-title').value = info.event.title;
+                    document.getElementById('deleteBtn').style.display = 'block';
+                    openForm();
+                },
+                dayCellDidMount(info) {
+                    const today = new Date();
+                    if (info.date.toDateString() === today.toDateString()) {
+                        info.el.style.backgroundColor = '#fff3cd';
+                    }
+                }
+            });
+            calendar.render();
+        });
+
+        function addMemo() {
+            const text = document.getElementById('memoText').value;
+            if (text.trim() !== '') {
+                const li = document.createElement('li');
+                li.textContent = text;
+                document.getElementById('memos').appendChild(li);
+                document.getElementById('memoText').value = '';
+            }
+        }
+
+        function openForm() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('event-form').style.display = 'block';
+        }
+
+        function closeForm() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('event-form').style.display = 'none';
+        }
+
+        function saveEvent() {
+            const title = document.getElementById('event-title').value;
+            if (selectedEvent) {
+                selectedEvent.setProp('title', title);
+            } else {
+                calendar.addEvent({ title, start: selectedDate });
+            }
+            closeForm();
+        }
+
+        function deleteEvent() {
+            if (selectedEvent) {
+                selectedEvent.remove();
+                closeForm();
+            }
+        }
+    </script>
+</body>
+
+</html>
