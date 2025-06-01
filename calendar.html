@@ -270,6 +270,104 @@
       }
     }
   </script>
+  <script type="module">
+    // Firebase SDK 불러오기
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+    // Firebase 설정
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-VhW1O5W4iDpJVUl0-d-Hunipl_ADs6E",
+      authDomain: "school-bd478.firebaseapp.com",
+      projectId: "school-bd478",
+      storageBucket: "school-bd478.appspot.com",
+      messagingSenderId: "94527491429",
+      appId: "1:94527491429:web:e46c6d26847dd1e62aa58c",
+      measurementId: "G-3C1Z6SPG68"
+    };
+
+    // Firebase 초기화
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 🗓️ FullCalendar와 연동된 일정 저장
+    async function saveEvent() {
+      const title = document.getElementById('event-title').value;
+      if (selectedEvent) {
+        // 수정 대신 삭제 후 추가
+        await deleteDoc(doc(db, "events", selectedEvent.extendedProps.firebaseId));
+        selectedEvent.remove();
+      }
+
+      const eventRef = await addDoc(collection(db, "events"), {
+        title: title,
+        date: selectedDate
+      });
+
+      calendar.addEvent({
+        title: title,
+        start: selectedDate,
+        firebaseId: eventRef.id
+      });
+
+      closeForm();
+    }
+
+    async function deleteEvent() {
+      if (selectedEvent) {
+        await deleteDoc(doc(db, "events", selectedEvent.extendedProps.firebaseId));
+        selectedEvent.remove();
+        closeForm();
+      }
+    }
+
+    // 🔁 Firestore에서 일정 불러오기
+    async function loadEvents() {
+      const querySnapshot = await getDocs(collection(db, "events"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        calendar.addEvent({
+          title: data.title,
+          start: data.date,
+          firebaseId: docSnap.id
+        });
+      });
+    }
+
+    // 📝 메모 저장
+    async function addMemo() {
+      const text = document.getElementById('memoText').value;
+      if (text.trim() !== '') {
+        await addDoc(collection(db, "memos"), { text });
+        document.getElementById('memoText').value = '';
+      }
+    }
+
+    // 🔁 메모 실시간 반영
+    onSnapshot(collection(db, "memos"), (snapshot) => {
+      const memosEl = document.getElementById('memos');
+      memosEl.innerHTML = '';
+      snapshot.forEach((docSnap) => {
+        const li = document.createElement('li');
+        li.textContent = docSnap.data().text;
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '삭제';
+        delBtn.onclick = async () => {
+          await deleteDoc(doc(db, "memos", docSnap.id));
+        };
+
+        li.appendChild(delBtn);
+        memosEl.appendChild(li);
+      });
+    });
+
+    // ✅ 캘린더 초기화 시 일정 불러오기
+    document.addEventListener('DOMContentLoaded', async function () {
+      await loadEvents();
+    });
+
+  </script>
 </body>
 
 </html>
