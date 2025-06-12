@@ -21,8 +21,9 @@
     }
 
     header {
-      background: linear-gradient(to right, #005bea, #00c6fb);
-      color: white;
+      background: url('https://postfiles.pstatic.net/MjAyNTA2MTJfMjUg/MDAxNzQ5NzEzNTAxMzc2.Njwu6v1GxIEUGLfKe0zWmv9tm0fJsUMj93To37ckRy0g.-Esfz70fvhiQ95VZ_7AB1ZMVyWoKQKx6d2-40h-ry3gg.JPEG/1000007110.jpg?type=w966')no-repeat center 55% / cover;
+      color: rgb(0, 0, 0);
+      height: 30vh;
       padding: 2rem 1rem;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -207,7 +208,7 @@
 <body>
   <header>
     <button class="home-btn" onclick="location.href='index.html'"> 홈으로</button>
-    <h1>📘 학교 뉴스</h1>
+    <h1>  📘 학교 뉴스</h1>
     <p>가장 빠르고 정확한 학교 소식지</p>
   </header>
 
@@ -215,7 +216,6 @@
     <form id="newsForm">
       <input type="text" id="title" placeholder="제목" required />
       <textarea id="content" placeholder="내용" rows="5" required></textarea>
-      <input type="file" id="image" accept="image/*" />
       <button type="submit">➕ 등록</button>
     </form>
 
@@ -227,7 +227,7 @@
   <button id="scrollTopBtn" title="맨 위로">🔝</button>
 
   <script>
-    
+
   </script>
   <script type="module">
     // 1. Firebase 연동
