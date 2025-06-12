@@ -39,6 +39,7 @@
       box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
     }
 
+    /* 일정 글씨 검은색으로 강제 적용 */
     .fc-event {
       background: none !important;
       border: none !important;
@@ -186,168 +187,88 @@
     <button onclick="closeForm()">취소</button>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      onSnapshot,
-      deleteDoc,
-      doc
-    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyB-VhW1O5W4iDpJVUl0-d-Hunipl_ADs6E",
-      authDomain: "school-bd478.firebaseapp.com",
-      projectId: "school-bd478",
-      storageBucket: "school-bd478.appspot.com",
-      messagingSenderId: "94527491429",
-      appId: "1:94527491429:web:e46c6d26847dd1e62aa58c",
-      measurementId: "G-3C1Z6SPG68"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
+  <script>
     let calendar;
     let selectedDate = null;
     let selectedEvent = null;
 
-    // 캘린더 초기화 및 이벤트 바인딩
-    document.addEventListener("DOMContentLoaded", async () => {
-      const calendarEl = document.getElementById("calendar");
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
       calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: "dayGridMonth",
-        locale: "ko",
+        initialView: 'dayGridMonth',
+        locale: 'ko',
         selectable: true,
         events: [],
-        dateClick: (info) => {
+        dateClick: function (info) {
           selectedDate = info.dateStr;
           selectedEvent = null;
-          document.getElementById("form-title").textContent = "일정 추가";
-          document.getElementById("event-title").value = "";
-          document.getElementById("deleteBtn").style.display = "none";
+          document.getElementById('form-title').textContent = '일정 추가';
+          document.getElementById('event-title').value = '';
+          document.getElementById('deleteBtn').style.display = 'none';
           openForm();
         },
-        eventClick: (info) => {
+        eventClick: function (info) {
           selectedEvent = info.event;
           selectedDate = info.event.startStr;
-          document.getElementById("form-title").textContent = "일정 수정";
-          document.getElementById("event-title").value = info.event.title;
-          document.getElementById("deleteBtn").style.display = "block";
+          document.getElementById('form-title').textContent = '일정 수정';
+          document.getElementById('event-title').value = info.event.title;
+          document.getElementById('deleteBtn').style.display = 'block';
           openForm();
         },
-        dayCellDidMount: (info) => {
+        dayCellDidMount(info) {
           const today = new Date();
           if (info.date.toDateString() === today.toDateString()) {
-            info.el.style.backgroundColor = "#fef9c3";
+            info.el.style.backgroundColor = '#fef9c3';
           }
         }
       });
       calendar.render();
-
-      // Firestore에서 일정 불러오기
-      await loadEvents();
     });
 
-    function openForm() {
-      document.getElementById("overlay").style.display = "block";
-      document.getElementById("event-form").style.display = "block";
-    }
+    function addMemo() {
+      const text = document.getElementById('memoText').value;
+      if (text.trim() !== '') {
+        const li = document.createElement('li');
+        li.textContent = text;
 
-    function closeForm() {
-      document.getElementById("overlay").style.display = "none";
-      document.getElementById("event-form").style.display = "none";
-    }
-
-    // 일정 저장 (추가 및 수정)
-    window.saveEvent = async () => {
-      const title = document.getElementById("event-title").value.trim();
-      if (!title) {
-        alert("일정 제목을 입력하세요.");
-        return;
-      }
-
-      if (selectedEvent) {
-        // 기존 이벤트 삭제 후 새로 추가
-        const id = selectedEvent.extendedProps.firebaseId;
-        if (id) {
-          await deleteDoc(doc(db, "events", id));
-        }
-        selectedEvent.remove();
-      }
-
-      const docRef = await addDoc(collection(db, "events"), {
-        title: title,
-        date: selectedDate
-      });
-
-      calendar.addEvent({
-        title: title,
-        start: selectedDate,
-        firebaseId: docRef.id
-      });
-
-      closeForm();
-    };
-
-    // 일정 삭제
-    window.deleteEvent = async () => {
-      if (!selectedEvent) return;
-
-      const id = selectedEvent.extendedProps.firebaseId;
-      if (id) {
-        await deleteDoc(doc(db, "events", id));
-      }
-      selectedEvent.remove();
-      closeForm();
-    };
-
-    // Firestore에서 일정 불러오기
-    async function loadEvents() {
-      const querySnapshot = await getDocs(collection(db, "events"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        calendar.addEvent({
-          title: data.title,
-          start: data.date,
-          firebaseId: docSnap.id
-        });
-      });
-    }
-
-    window.loadEvents = loadEvents;
-
-    // 메모 추가
-    window.addMemo = async () => {
-      const memoInput = document.getElementById("memoText");
-      const text = memoInput.value.trim();
-      if (!text) return;
-
-      await addDoc(collection(db, "memos"), { text: text });
-      memoInput.value = "";
-    };
-
-    // 메모 실시간 불러오기 및 삭제 기능
-    onSnapshot(collection(db, "memos"), (snapshot) => {
-      const memosEl = document.getElementById("memos");
-      memosEl.innerHTML = "";
-      snapshot.forEach((docSnap) => {
-        const li = document.createElement("li");
-        li.textContent = docSnap.data().text;
-
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "삭제";
-        delBtn.onclick = async () => {
-          await deleteDoc(doc(db, "memos", docSnap.id));
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '삭제';
+        delBtn.onclick = function () {
+          li.remove();
         };
 
         li.appendChild(delBtn);
-        memosEl.appendChild(li);
-      });
-    });
+        document.getElementById('memos').appendChild(li);
+        document.getElementById('memoText').value = '';
+      }
+    }
+
+    function openForm() {
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('event-form').style.display = 'block';
+    }
+
+    function closeForm() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('event-form').style.display = 'none';
+    }
+
+    function saveEvent() {
+      const title = document.getElementById('event-title').value;
+      if (selectedEvent) {
+        selectedEvent.setProp('title', title);
+      } else {
+        calendar.addEvent({ title, start: selectedDate });
+      }
+      closeForm();
+    }
+
+    function deleteEvent() {
+      if (selectedEvent) {
+        selectedEvent.remove();
+        closeForm();
+      }
+    }
   </script>
 </body>
 

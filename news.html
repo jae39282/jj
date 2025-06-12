@@ -227,21 +227,47 @@
   <button id="scrollTopBtn" title="맨 위로">🔝</button>
 
   <script>
+    
+  </script>
+  <script type="module">
+    // 1. Firebase 연동
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMjvVsP90KccVPodO1O_uurj4jHyQ_D6I",
+      authDomain: "oyhs-f980b.firebaseapp.com",
+      projectId: "oyhs-f980b",
+      storageBucket: "oyhs-f980b.appspot.com",
+      messagingSenderId: "131332316277",
+      appId: "1:131332316277:web:7e6983cf226852caaeac3c",
+      measurementId: "G-2Q917LJHMW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // 2. DOM 요소
     const form = document.getElementById('newsForm');
     const newsList = document.getElementById('newsList');
-    const scrollBtn = document.getElementById("scrollTopBtn");
     const searchInput = document.getElementById('searchInput');
+    const scrollBtn = document.getElementById("scrollTopBtn");
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
+    // 3. 뉴스 불러오기
+    async function loadNews() {
+      newsList.innerHTML = '';
+      const querySnapshot = await getDocs(collection(db, "news"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const card = createNewsCard(docSnap.id, data.title, data.content, data.imageUrl);
+        newsList.prepend(card);
+      });
+    }
 
-      const title = document.getElementById('title').value.trim();
-      const content = document.getElementById('content').value.trim();
-      const imageInput = document.getElementById('image');
-      const imageFile = imageInput.files[0];
-
-      if (!title || !content) return;
-
+    // 4. 카드 생성 함수
+    function createNewsCard(id, title, content, imageUrl = '') {
       const card = document.createElement('div');
       card.className = 'card';
 
@@ -254,65 +280,76 @@
       const actions = document.createElement('div');
       actions.className = 'actions';
 
-      const editBtn = document.createElement('button');
-      editBtn.className = 'edit';
-      editBtn.textContent = '✏️ 수정';
-      editBtn.onclick = () => {
-        const newTitle = prompt('새 제목을 입력하세요', h3.textContent);
-        const newContent = prompt('새 내용을 입력하세요', p.textContent);
-        if (newTitle) h3.textContent = newTitle;
-        if (newContent) p.textContent = newContent;
-      };
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'delete';
-      deleteBtn.textContent = '🗑️ 삭제';
-      deleteBtn.onclick = () => {
+      const del = document.createElement('button');
+      del.className = 'delete';
+      del.textContent = '🗑️ 삭제';
+      del.onclick = async () => {
         if (confirm('정말 삭제하시겠습니까?')) {
+          await deleteDoc(doc(db, "news", id));
           card.remove();
         }
       };
 
-      actions.appendChild(editBtn);
-      actions.appendChild(deleteBtn);
-
+      actions.appendChild(del);
       card.appendChild(h3);
       card.appendChild(p);
+      if (imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        card.insertBefore(img, actions);
+      }
+      card.appendChild(actions);
+      return card;
+    }
 
+    // 5. 폼 제출 (등록)
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      const content = document.getElementById('content').value.trim();
+      const imageFile = document.getElementById('image').files[0];
+      if (!title || !content) return;
+
+      let imageUrl = '';
       if (imageFile) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          card.insertBefore(img, actions);
-        };
-        reader.readAsDataURL(imageFile);
+        const storageRef = ref(storage, 'news/' + Date.now() + '_' + imageFile.name);
+        const uploadTask = uploadBytesResumable(storageRef, imageFile);
+        await new Promise((resolve, reject) => {
+          uploadTask.on('state_changed', null, reject, async () => {
+            imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve();
+          });
+        });
       }
 
-      card.appendChild(actions);
+      const docRef = await addDoc(collection(db, "news"), { title, content, imageUrl });
+      const card = createNewsCard(docRef.id, title, content, imageUrl);
       newsList.prepend(card);
       form.reset();
       searchInput.value = "";
     });
 
-    window.onscroll = function () {
-      scrollBtn.style.display = window.scrollY > 200 ? "block" : "none";
-    };
-
-    scrollBtn.onclick = function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
+    // 6. 검색 기능
     searchInput.addEventListener('input', function () {
       const keyword = this.value.toLowerCase();
       const cards = document.querySelectorAll('.news-list .card');
-
       cards.forEach(card => {
         const title = card.querySelector('h3').textContent.toLowerCase();
         const content = card.querySelector('p').textContent.toLowerCase();
         card.style.display = (title.includes(keyword) || content.includes(keyword)) ? 'block' : 'none';
       });
     });
+
+    // 7. 스크롤 버튼
+    window.onscroll = function () {
+      scrollBtn.style.display = window.scrollY > 200 ? "block" : "none";
+    };
+    scrollBtn.onclick = function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // 8. 초기 실행
+    loadNews();
   </script>
 </body>
 
