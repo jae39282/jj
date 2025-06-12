@@ -3,272 +3,353 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>학교 일정 캘린더</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>학교 뉴스</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
-      color: #333;
+    }
+
+    body {
+      font-family: 'Pretendard', sans-serif;
+      background: #f5f7fa;
+      color: #222;
+      line-height: 1.6;
     }
 
     header {
-      background: linear-gradient(to right, #667eea, #764ba2);
-      color: white;
-      padding: 2rem;
+      background: url('./images/calender.jpg')no-repeat center 55% / cover;
+      color: rgb(0, 0, 0);
+      height: 30vh;
+      padding: 2rem 1rem;
       text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 2.2rem;
-      letter-spacing: 1px;
+    header h1 {
+      font-size: 2.3rem;
+      margin-bottom: 0.5rem;
     }
 
-    #calendar {
+    .home-btn {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      background-color: white;
+      color: #005bea;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease;
+      font-size: 1.2rem;
+    }
+
+    .home-btn:hover {
+      background-color: #e4efff;
+    }
+
+    .container {
       max-width: 1000px;
       margin: 2rem auto;
-      background-color: white;
-      padding: 1.5rem;
-      border-radius: 20px;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      padding: 0 1rem;
     }
 
-    /* 일정 글씨 검은색으로 강제 적용 */
-    .fc-event {
-      background: none !important;
-      border: none !important;
-      color: black !important;
-      font-weight: bold;
+    #newsForm {
+      background: white;
+      padding: 1rem;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      align-items: flex-start;
     }
 
-    .fc-event .fc-event-title {
-      color: black !important;
-    }
-
-    .memo-input,
-    .memo-list {
-      max-width: 1000px;
-      margin: 1rem auto;
-      padding: 1rem 1.5rem;
-      background: #ffffffd9;
-      border-radius: 20px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    }
-
-    .memo-input input {
-      padding: 0.7rem;
+    #newsForm input[type="text"],
+    #newsForm textarea {
+      flex: 1 1 300px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
       font-size: 1rem;
-      width: 70%;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-right: 0.5rem;
     }
 
-    .memo-input button,
-    .nav-button {
-      padding: 0.7rem 1.2rem;
-      font-size: 1rem;
-      background: linear-gradient(to right, #333333, #555555);
-      border: none;
+    #newsForm textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    #newsForm input[type="file"] {
+      flex: 1 1 200px;
+    }
+
+    #newsForm button {
+      padding: 0.8rem 1.5rem;
+      background: #005bea;
       color: white;
-      border-radius: 8px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
+      flex: 1 1 150px;
     }
 
-    .memo-input button:hover,
-    .nav-button:hover {
-      background: linear-gradient(to right, #555555, #333333);
+    #newsForm button:hover {
+      background: #0041c4;
     }
 
-    .nav-button {
-      display: block;
-      margin: 2rem auto 0;
-      text-align: center;
-      text-decoration: none;
-    }
-
-    .memo-list li {
-      margin: 0.3rem 0;
-    }
-
-    .memo-list li button {
-      margin-left: 1rem;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 0.2rem 0.6rem;
-      cursor: pointer;
-    }
-
-    #event-form {
-      display: none;
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 16px;
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
-      z-index: 1000;
-    }
-
-    #event-form input,
-    #event-form button {
-      margin: 0.5rem 0;
-      padding: 0.6rem;
+    #searchInput {
       width: 100%;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      border: 1.5px solid #ccc;
+      outline: none;
+      transition: border-color 0.3s ease;
     }
 
-    #event-form button {
-      background: linear-gradient(to right, #333333, #555555);
+    #searchInput:focus {
+      border-color: #005bea;
+      box-shadow: 0 0 8px rgba(0, 91, 234, 0.5);
+    }
+
+    .news-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: white;
+      padding: 1.2rem;
+      border-radius: 14px;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 0.95rem;
+      white-space: pre-wrap;
+    }
+
+    .card img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 0.8rem;
+    }
+
+    .card .actions {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .card button {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .edit {
+      background: #00c6ae;
+      color: white;
+    }
+
+    .delete {
+      background: #ff5e5e;
+      color: white;
+    }
+
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 30px;
+      right: 20px;
+      z-index: 100;
+      background-color: #005bea;
       color: white;
       border: none;
-      transition: background 0.3s ease;
-    }
-
-    #event-form button:hover {
-      background: linear-gradient(to right, #555555, #333333);
-    }
-
-    #deleteBtn {
-      background: #e74c3c;
-    }
-
-    #overlay {
+      padding: 0.6rem 1rem;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 999;
+    }
+
+    #scrollTopBtn:hover {
+      background-color: #003e9f;
     }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>학교 일정 캘린더</h1>
+    <button class="home-btn" onclick="location.href='index.html'"> 홈으로</button>
+    <h1>  📘 학교 뉴스</h1>
+    <p>가장 빠르고 정확한 학교 소식지</p>
   </header>
 
-  <div id="calendar"></div>
+  <div class="container">
+    <form id="newsForm">
+      <input type="text" id="title" placeholder="제목" required />
+      <textarea id="content" placeholder="내용" rows="5" required></textarea>
+      <button type="submit">➕ 등록</button>
+    </form>
 
-  <div class="memo-input">
-    <input type="text" id="memoText" placeholder="메모를 입력하세요" />
-    <button onclick="addMemo()">메모 추가</button>
+    <input type="text" id="searchInput" placeholder="🔍 기사 검색 (제목, 내용)" />
+
+    <div class="news-list" id="newsList"></div>
   </div>
 
-  <div class="memo-list" id="memoList">
-    <h3>내 메모</h3>
-    <ul id="memos"></ul>
-  </div>
-
-  <a href="index.html" class="nav-button">홈으로 이동</a>
-
-  <div id="overlay"></div>
-  <div id="event-form">
-    <h3 id="form-title">일정 추가</h3>
-    <input type="text" id="event-title" placeholder="일정 제목" />
-    <button onclick="saveEvent()">저장</button>
-    <button onclick="deleteEvent()" id="deleteBtn" style="display: none;">삭제</button>
-    <button onclick="closeForm()">취소</button>
-  </div>
+  <button id="scrollTopBtn" title="맨 위로">🔝</button>
 
   <script>
-    let calendar;
-    let selectedDate = null;
-    let selectedEvent = null;
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const calendarEl = document.getElementById('calendar');
-      calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'ko',
-        selectable: true,
-        events: [],
-        dateClick: function (info) {
-          selectedDate = info.dateStr;
-          selectedEvent = null;
-          document.getElementById('form-title').textContent = '일정 추가';
-          document.getElementById('event-title').value = '';
-          document.getElementById('deleteBtn').style.display = 'none';
-          openForm();
-        },
-        eventClick: function (info) {
-          selectedEvent = info.event;
-          selectedDate = info.event.startStr;
-          document.getElementById('form-title').textContent = '일정 수정';
-          document.getElementById('event-title').value = info.event.title;
-          document.getElementById('deleteBtn').style.display = 'block';
-          openForm();
-        },
-        dayCellDidMount(info) {
-          const today = new Date();
-          if (info.date.toDateString() === today.toDateString()) {
-            info.el.style.backgroundColor = '#fef9c3';
-          }
-        }
+  </script>
+  <script type="module">
+    // 1. Firebase 연동
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMjvVsP90KccVPodO1O_uurj4jHyQ_D6I",
+      authDomain: "oyhs-f980b.firebaseapp.com",
+      projectId: "oyhs-f980b",
+      storageBucket: "oyhs-f980b.appspot.com",
+      messagingSenderId: "131332316277",
+      appId: "1:131332316277:web:7e6983cf226852caaeac3c",
+      measurementId: "G-2Q917LJHMW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // 2. DOM 요소
+    const form = document.getElementById('newsForm');
+    const newsList = document.getElementById('newsList');
+    const searchInput = document.getElementById('searchInput');
+    const scrollBtn = document.getElementById("scrollTopBtn");
+
+    // 3. 뉴스 불러오기
+    async function loadNews() {
+      newsList.innerHTML = '';
+      const querySnapshot = await getDocs(collection(db, "news"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const card = createNewsCard(docSnap.id, data.title, data.content, data.imageUrl);
+        newsList.prepend(card);
       });
-      calendar.render();
+    }
+
+    // 4. 카드 생성 함수
+    function createNewsCard(id, title, content, imageUrl = '') {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const h3 = document.createElement('h3');
+      h3.textContent = title;
+
+      const p = document.createElement('p');
+      p.textContent = content;
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const del = document.createElement('button');
+      del.className = 'delete';
+      del.textContent = '🗑️ 삭제';
+      del.onclick = async () => {
+        if (confirm('정말 삭제하시겠습니까?')) {
+          await deleteDoc(doc(db, "news", id));
+          card.remove();
+        }
+      };
+
+      actions.appendChild(del);
+      card.appendChild(h3);
+      card.appendChild(p);
+      if (imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        card.insertBefore(img, actions);
+      }
+      card.appendChild(actions);
+      return card;
+    }
+
+    // 5. 폼 제출 (등록)
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      const content = document.getElementById('content').value.trim();
+      const imageFile = document.getElementById('image').files[0];
+      if (!title || !content) return;
+
+      let imageUrl = '';
+      if (imageFile) {
+        const storageRef = ref(storage, 'news/' + Date.now() + '_' + imageFile.name);
+        const uploadTask = uploadBytesResumable(storageRef, imageFile);
+        await new Promise((resolve, reject) => {
+          uploadTask.on('state_changed', null, reject, async () => {
+            imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve();
+          });
+        });
+      }
+
+      const docRef = await addDoc(collection(db, "news"), { title, content, imageUrl });
+      const card = createNewsCard(docRef.id, title, content, imageUrl);
+      newsList.prepend(card);
+      form.reset();
+      searchInput.value = "";
     });
 
-    function addMemo() {
-      const text = document.getElementById('memoText').value;
-      if (text.trim() !== '') {
-        const li = document.createElement('li');
-        li.textContent = text;
+    // 6. 검색 기능
+    searchInput.addEventListener('input', function () {
+      const keyword = this.value.toLowerCase();
+      const cards = document.querySelectorAll('.news-list .card');
+      cards.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const content = card.querySelector('p').textContent.toLowerCase();
+        card.style.display = (title.includes(keyword) || content.includes(keyword)) ? 'block' : 'none';
+      });
+    });
 
-        const delBtn = document.createElement('button');
-        delBtn.textContent = '삭제';
-        delBtn.onclick = function () {
-          li.remove();
-        };
+    // 7. 스크롤 버튼
+    window.onscroll = function () {
+      scrollBtn.style.display = window.scrollY > 200 ? "block" : "none";
+    };
+    scrollBtn.onclick = function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-        li.appendChild(delBtn);
-        document.getElementById('memos').appendChild(li);
-        document.getElementById('memoText').value = '';
-      }
-    }
-
-    function openForm() {
-      document.getElementById('overlay').style.display = 'block';
-      document.getElementById('event-form').style.display = 'block';
-    }
-
-    function closeForm() {
-      document.getElementById('overlay').style.display = 'none';
-      document.getElementById('event-form').style.display = 'none';
-    }
-
-    function saveEvent() {
-      const title = document.getElementById('event-title').value;
-      if (selectedEvent) {
-        selectedEvent.setProp('title', title);
-      } else {
-        calendar.addEvent({ title, start: selectedDate });
-      }
-      closeForm();
-    }
-
-    function deleteEvent() {
-      if (selectedEvent) {
-        selectedEvent.remove();
-        closeForm();
-      }
-    }
+    // 8. 초기 실행
+    loadNews();
   </script>
 </body>
 

@@ -208,7 +208,7 @@
 <body>
   <header>
     <button class="home-btn" onclick="location.href='index.html'"> 홈으로</button>
-    <h1>  📘 학교 뉴스</h1>
+    <h1> 📘 학교 뉴스</h1>
     <p>가장 빠르고 정확한 학교 소식지</p>
   </header>
 
@@ -293,11 +293,7 @@
       actions.appendChild(del);
       card.appendChild(h3);
       card.appendChild(p);
-      if (imageUrl) {
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        card.insertBefore(img, actions);
-      }
+
       card.appendChild(actions);
       return card;
     }
@@ -307,20 +303,11 @@
       e.preventDefault();
       const title = document.getElementById('title').value.trim();
       const content = document.getElementById('content').value.trim();
-      const imageFile = document.getElementById('image').files[0];
+
       if (!title || !content) return;
 
-      let imageUrl = '';
-      if (imageFile) {
-        const storageRef = ref(storage, 'news/' + Date.now() + '_' + imageFile.name);
-        const uploadTask = uploadBytesResumable(storageRef, imageFile);
-        await new Promise((resolve, reject) => {
-          uploadTask.on('state_changed', null, reject, async () => {
-            imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-            resolve();
-          });
-        });
-      }
+      // 이미지 업로드 미구현 상태라 빈 문자열로 처리
+      const imageUrl = '';
 
       const docRef = await addDoc(collection(db, "news"), { title, content, imageUrl });
       const card = createNewsCard(docRef.id, title, content, imageUrl);
